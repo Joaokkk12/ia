@@ -7,17 +7,14 @@ from fuzzywuzzy import fuzz  # Usando fuzzywuzzy para comparação de similarida
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
+
 # Padrão de regex para identificar o formato de "quando eu falar"
 PADRAO_PERGUNTA = [
     r"quando eu falar\s*(.*?),?\s*tu fala\s*(.*)",
     r"when i ask you\s*(.*?),?\s*you say\s*(.*)",
     r"quando eu dizer\s*(.*?),?\s*voc[eê] fala\s*(.*)"
 ]
-test_strings = [
-    "quando eu falar oi, tu fala olá!",
-    "when i ask you hello, you say hi!",
-    "quando eu dizer teste, você fala sucesso!"
-]
+
 # Dicionário de perguntas predefinidas com suas respectivas respostas
 perguntas_predefinidas = {
     "oi": "ola! como posso ajudar hoje?",
@@ -33,7 +30,6 @@ perguntas_predefinidas = {
     "kkk":"kkk",
     "KAKAKA":"kkk",
     "jajajajaja":"kkk",
-    
     "chatGPT":"um amigo",
     "quem te fez?":"tambem penso nisso",
     "rapunzel":"jogue seus cabelos!",
@@ -79,25 +75,26 @@ def salvar_resposta():
 
     print(f"Texto recebido: {texto}")  # Debug para ver o que o servidor recebe
 
-    print(f"Texto recebido: '{texto}'")  # Debug do texto recebido
+    # Loop para verificar se a string segue algum dos padrões de regex
+    for padrao in PADRAO_PERGUNTA:
+        match = re.match(padrao, texto, re.IGNORECASE)
+        print(f"Testando regex: {padrao} -> {bool(match)}")  # Mostra se encontrou um match
 
-for padrao in PADRAO_PERGUNTA:
-    match = re.match(padrao, texto, re.IGNORECASE)
-    print(f"Testando regex: {padrao} -> {bool(match)}")  # Mostra se encontrou um match
+        if match:
+            pergunta, resposta = match.groups()
+            print(f"Extraído -> Pergunta: '{pergunta}', Resposta: '{resposta}'")  # Confirmação do match
+            pergunta, resposta = pergunta.strip(), resposta.strip()
 
-    if match:
-        pergunta, resposta = match.groups()
-        print(f"Extraído -> Pergunta: '{pergunta}', Resposta: '{resposta}'")  # Confirmação do match
-        pergunta, resposta = pergunta.strip(), resposta.strip()
+            respostas_personalizadas[pergunta] = resposta
+            salvar_respostas(respostas_personalizadas)  # Salva no JSON
 
-        respostas_personalizadas[pergunta] = resposta
-        salvar_respostas(respostas_personalizadas)  # Salva no JSON
+            return jsonify({"status": "sucesso", "mensagem": f"Agora, quando você disser '{pergunta}', eu responderei '{resposta}'!"})
 
-        return jsonify({"status": "sucesso", "mensagem": f"Agora, quando você disser '{pergunta}', eu responderei '{resposta}'!"})
+    # Se nenhum padrão casou, retorna erro
+    print("Formato inválido!")  
+    return jsonify({"status": "erro", "mensagem": "Formato inválido! Use: 'quando eu falar [pergunta], tu fala [resposta]'."})
 
-# Se nenhum padrão casou, retorna erro
-print("Formato inválido!")  
-return jsonify({"status": "erro", "mensagem": "Formato inválido! Use: 'quando eu falar [pergunta], tu fala [resposta]'."})@app.route("/perguntar", methods=["POST"])
+@app.route("/perguntar", methods=["POST"])
 def perguntar():
     data = request.get_json()
     pergunta_usuario = data.get("pergunta", "").lower().strip()
