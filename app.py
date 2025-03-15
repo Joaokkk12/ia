@@ -6,8 +6,7 @@ import re
 from fuzzywuzzy import fuzz  # Usando fuzzywuzzy para comparação de similaridade
 
 app = Flask(__name__)
-CORS(app)
-
+CORS(app, resources={r"/*": {"origins": "*"}})
 # Padrão de regex para identificar o formato de "quando eu falar"
 PADRAO_PERGUNTA = [
     r"quando eu falar (.*?), tu fala (.*)",
