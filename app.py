@@ -100,4 +100,5 @@ def perguntar():
         return jsonify({"resposta": "Não sei o que é isso, mas posso aprender com você!"})
 
 if __name__ == "__main__":
-    app.run(port=5000, debug=True)
+    from os import environ
+    app.run(host="0.0.0.0", port=int(environ.get("PORT", 5000)))
