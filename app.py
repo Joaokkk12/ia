@@ -9,9 +9,9 @@ app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 # Padrão de regex para identificar o formato de "quando eu falar"
 PADRAO_PERGUNTA = [
-    r"quando eu falar (.*?), tu fala (.*)",
-    r"when i ask you (.*?), you say (.*)",
-    r"quando eu dizer (.*?), você fala (.*)"
+    r"quando eu falar\s*(.*?),?\s*tu fala\s*(.*)",
+    r"when i ask you\s*(.*?),?\s*you say\s*(.*)",
+    r"quando eu dizer\s*(.*?),?\s*voc[eê] fala\s*(.*)"
 ]
 
 # Dicionário de perguntas predefinidas com suas respectivas respostas
