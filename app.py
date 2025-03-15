@@ -13,6 +13,7 @@ PADRAO_PERGUNTA = r"quando eu falar (.*?), tu fala (.*)"
 
 # Dicionário de perguntas predefinidas com suas respectivas respostas
 perguntas_predefinidas = {
+    "ok":"...",
     "oi": "ola! como posso ajudar hoje?",
     "como vai": "estou otimo, posso ajudar em algo?",
     "tudo bem?": "tudo, e com voce?",
