@@ -9,11 +9,14 @@ app = Flask(__name__)
 CORS(app)
 
 # Padrão de regex para identificar o formato de "quando eu falar"
-PADRAO_PERGUNTA = r"quando eu falar (.*?), tu fala (.*)"
+PADRAO_PERGUNTA = [
+    r"quando eu falar (.*?), tu fala (.*)",
+    r"when i ask you (.*?), you say (.*)",
+    r"quando eu dizer (.*?), você fala (.*)"
+]
 
 # Dicionário de perguntas predefinidas com suas respectivas respostas
 perguntas_predefinidas = {
-    "ok":"...",
     "oi": "ola! como posso ajudar hoje?",
     "como vai": "estou otimo, posso ajudar em algo?",
     "tudo bem?": "tudo, e com voce?",
@@ -71,22 +74,22 @@ def salvar_resposta():
     data = request.get_json()
     texto = data.get("pergunta", "").strip().lower()
 
-    print(f"Texto recebido: {texto}")  # Adicionando um print para verificar o que o servidor está recebendo
+    print(f"Texto recebido: {texto}")  # Debug para ver o que o servidor recebe
 
-    match = re.match(PADRAO_PERGUNTA, texto)
-    
-    if match:
-        pergunta, resposta = match.groups()
-        pergunta, resposta = pergunta.strip(), resposta.strip()
+    for padrao in PADRAO_PERGUNTA:
+        match = re.match(padrao, texto)
+        if match:
+            pergunta, resposta = match.groups()
+            pergunta, resposta = pergunta.strip(), resposta.strip()
 
-        respostas_personalizadas[pergunta] = resposta
-        salvar_respostas(respostas_personalizadas)  # Agora salva sempre que aprende algo novo
-        
-        return jsonify({"status": "sucesso", "mensagem": f"Agora, quando você disser '{pergunta}', eu responderei '{resposta}'!"})
-    else:
-        print("Formato inválido!")  # Verificando se o formato não está batendo com a regex
-        return jsonify({"status": "erro", "mensagem": "Formato inválido! Use: 'quando eu falar [pergunta], tu fala [resposta]'."})
+            respostas_personalizadas[pergunta] = resposta
+            salvar_respostas(respostas_personalizadas)  # Salva no JSON
 
+            return jsonify({"status": "sucesso", "mensagem": f"Agora, quando você disser '{pergunta}', eu responderei '{resposta}'!"})
+
+    # Se nenhum padrão casou, retorna erro
+    print("Formato inválido!")  
+    return jsonify({"status": "erro", "mensagem": "Formato inválido! Use: 'quando eu falar [pergunta], tu fala [resposta]'."})
 @app.route("/perguntar", methods=["POST"])
 def perguntar():
     data = request.get_json()
