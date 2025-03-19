@@ -63,7 +63,7 @@ def encontrar_pergunta_similar(pergunta_usuario):
     # Verifica as perguntas salvas no JSON
     for pergunta_salva, resposta_salva in respostas_personalizadas.items():
         similaridade = fuzz.ratio(pergunta_usuario.lower(), pergunta_salva.lower())  # Comparação de similaridade
-        if similaridade >= 80:
+        if similaridade >= 50:
             return resposta_salva
     
     return None  # Se não encontrar nenhuma similaridade
