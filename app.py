@@ -4,6 +4,7 @@ from flask_cors import CORS
 import json
 import re
 from fuzzywuzzy import fuzz  # Usando fuzzywuzzy para comparação de similaridade
+from web import search  # Importa a ferramenta de busca na web
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
@@ -26,14 +27,14 @@ perguntas_predefinidas = {
     "prazer em conhece-lo": "prazer, como posso te ajudar?",
     "voce um robo": "sou uma ia criada com python com respostas pre-definidas, porém posso aprender com você!",
     "obrigad": "de nada!",
-    "kakaka":"kkk",
-    "kkk":"kkk",
-    "KAKAKA":"kkk",
-    "jajajajaja":"kkk",
-    "chatGPT":"um amigo",
-    "quem te fez?":"tambem penso nisso",
-    "rapunzel":"jogue seus cabelos!",
-    "rapunzel o filme":"é um longa metragem de animação produzido pela Walt Disney Animation Studios. ...pode ver mais em <br><a href='https://pt.wikipedia.org/wiki/Tangled'>Wikipedia</a>"
+    "kakaka": "kkk",
+    "kkk": "kkk",
+    "KAKAKA": "kkk",
+    "jajajajaja": "kkk",
+    "chatGPT": "um amigo",
+    "quem te fez?": "tambem penso nisso",
+    "rapunzel": "jogue seus cabelos!",
+    "rapunzel o filme": "é um longa metragem de animação produzido pela Walt Disney Animation Studios. ...pode ver mais em <br><a href='https://pt.wikipedia.org/wiki/Tangled'>Wikipedia</a>"
 }
 
 # Função para carregar as respostas do JSON
@@ -105,6 +106,15 @@ def perguntar():
     if resposta:
         return jsonify({"resposta": resposta})
     else:
+        # Se não souber, tenta buscar na web
+        try:
+            resultado_web = search(pergunta_usuario)
+            if resultado_web:
+                return jsonify({"resposta": f"Não sei exatamente, mas achei isso na web: {resultado_web}"})
+        except Exception as e:
+            print(f"Erro ao buscar na web: {e}")
+
+        # Se não encontrar nada na web, responde que não sabe
         return jsonify({"resposta": "Não sei o que é isso, mas posso aprender com você!"})
 
 if __name__ == "__main__":
