@@ -72,7 +72,9 @@ def encontrar_pergunta_similar(pergunta_usuario):
 # Função para buscar no Google quando a IA não souber responder
 def buscar_na_web(pergunta):
     url = f"https://www.google.com/search?q={pergunta.replace(' ', '+')}"
-    return f"Não sei a resposta, mas você pode pesquisar aqui: {url}"
+   return f"Não sei a resposta, mas você pode pesquisar aqui: {url}\n" \
+       "Se achar a resposta, pode mandar pra mim se quiser, " \
+       "aí na próxima eu te respondo com ela. Vlw?"
 
 @app.route("/salvar_resposta", methods=["POST"])
 def salvar_resposta():
