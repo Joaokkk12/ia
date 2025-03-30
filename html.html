@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8"> <!-- Corrigido aqui -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="Regex ia">
+<meta property="og:description" content="Regex ia from liraz os">
+<meta property="og:image" content="Downloads/favicon.png">
+    <meta name="description" content="Regex ia">
+<meta name="keywords" content="Regex ia,chatGPT,bot,ia,AI,robo,robot">
+    <title>reRex ia</title>
+</head>
+    <link rel="icon" type="image/png" href="Downloads/favicon.png">
+    <body>
+    
+    <canvas id="waveCanvas"></canvas>
+    <div id="content">
+        <div id="modelname">
+    <h1>reRex IA</h1><h3>model beta1H</h3>
+            <button style="background:transparent; border:none;" onclick='toggleMode()' ><img src="night-mode.png" id="night-mode" width="20px" ></button>
+       </div>
+    <!-- Formulário para enviar a pergunta -->
+        <div id="form">
+    <form id="perguntaForm">
+       
+        <input type="text" id="pergunta" name="pergunta" placeholder='Ask reRex(bEta)' required>
+        <button type="submit" id="wav"><img src="Star SVG.jpeg" style="width:40px; border-radius:12px;"></button>
+    </form>
+</div>
+    
+    <div id="resposta"></div> <!-- Alterado para uma div para melhor controle -->
+</div>
+    <script>
+let podePerguntar = true; // Controle para evitar múltiplas requisições
+
+document.getElementById('perguntaForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    if (!podePerguntar) return; // Bloqueia requisições repetidas
+
+    podePerguntar = false; // Bloqueia novas requisições por 3 segundos
+    setTimeout(() => podePerguntar = true, 3000); // Libera após 3s
+
+    const pergunta = document.getElementById('pergunta').value.trim().toLowerCase();
+    const respostaContainer = document.getElementById('resposta');
+
+    if (!pergunta) return; // Evita requisições vazias
+
+    // Exibe a mensagem do usuário
+    const mensagem = document.createElement('div');
+    mensagem.classList.add("usermensage");
+    mensagem.innerHTML = `<p>${document.getElementById('pergunta').value}</p>`;
+    respostaContainer.appendChild(mensagem);
+
+    // Adiciona o indicador de loading
+    const loading = document.createElement('div');
+    loading.classList.add("loading");
+    loading.innerHTML = "<p>⬤</p>";
+    respostaContainer.appendChild(loading);
+
+    let url = "https://ia-fsf5.onrender.com/";
+    const aprender = ["quando eu falar", "when i ask you", "quando eu dizer"];
+    let endpoint = aprender.some(prefixo => pergunta.startsWith(prefixo)) ? "salvar_resposta" : "perguntar";
+
+    fetch(url + endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pergunta: pergunta })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (respostaContainer.contains(loading)) {
+            respostaContainer.removeChild(loading);
+        }
+
+        const botmensage = document.createElement('div');
+        botmensage.classList.add("botmensage");
+
+        const resposta = data.resposta || data.mensagem || "Sem resposta.";
+
+        if (resposta.startsWith("<!DOCTYPE html>")) {
+            botmensage.innerHTML = `<div><pre><p>${resposta}</p></pre></div>`;
+        } else {
+            botmensage.innerHTML = `<p>${resposta}</p>`;
+        }
+
+        respostaContainer.appendChild(botmensage);
+        window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' });
+    })
+    .catch(error => {
+        console.error('Erro na requisição:', error);
+        if (respostaContainer.contains(loading)) {
+            respostaContainer.removeChild(loading);
+        }
+        respostaContainer.innerHTML += '<p>Erro ao obter resposta.</p>';
+    });
+});
+    </script>
+ <script>
+const canvas = document.getElementById("waveCanvas");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let time = 0;
+const waves = [
+    { amplitude: 50, frequency: 0.02, speed: 0.03, color: "rgba(255, 255, 255, 0.5)" },
+    { amplitude: 40, frequency: 0.015, speed: 0.025, color: "rgba(200, 200, 255, 0.4)" },
+    { amplitude: 60, frequency: 0.018, speed: 0.02, color: "rgba(150, 200, 255, 0.6)" },
+    { amplitude: 70, frequency: 0.018, speed: 0.025, color: "rgba(200, 220, 255, 0.6)" },
+    { amplitude: 80, frequency: 0.012, speed: 0.023, color: "rgba(150, 250, 255, 0.7)" }
+];
+
+function drawWave() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    waves.forEach((wave, index) => {
+        ctx.beginPath();
+        ctx.moveTo(0, canvas.height / 2);
+
+        for (let x = 0; x < canvas.width; x++) {
+            // Movimentos mais suaves com menos distorção
+            let y = Math.sin(x * wave.frequency + time * wave.speed) * wave.amplitude
+                + Math.random() * 5 * (Math.sin(x * wave.frequency + time * wave.speed)) // Distorções mais sutis
+                + canvas.height / 2;
+
+            ctx.lineTo(x, y + index * 10); // Camadas levemente deslocadas
+
+            // Reduzindo a chance de "flash" e deixando o brilho mais suave
+            if (Math.random() < 0.03) {  // Chance reduzida de brilho
+                ctx.lineWidth = Math.random() * 2 + 4;  // Linha mais fina
+                ctx.shadowColor = wave.color;  // Cor do brilho
+                ctx.shadowBlur = 10 + Math.random() * 5;  // Brilho mais suave
+            } else {
+                ctx.lineWidth = 4;  // Linhas normais e mais finas
+                ctx.shadowBlur = 5;  // Brilho suave
+            }
+        }
+
+        // Finaliza o desenho da onda
+        ctx.strokeStyle = wave.color;
+        ctx.stroke();
+
+        // Limpa o efeito de sombra após desenhar a onda
+        ctx.shadowBlur = 0;
+    });
+
+    time += 1;
+    requestAnimationFrame(drawWave);
+}
+
+drawWave();
+
+window.addEventListener("resize", () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+});
+    </script>
+        <script>
+ // Obtém o modo salvo no localStorage ou define como "light" por padrão
+let model = localStorage.getItem("mode") || "light";
+
+// Aplica o modo salvo ao carregar a página
+function applyMode() {
+    document.body.style.backgroundColor = model === "light" ? "rgba(255,255,255,1)" : "rgba(20,20,20,1)";
+    document.getElementById("pergunta").style.backgroundColor = model === "light" ? "rgba(255,255,255,1)" : "rgba(25,25,25,1)";
+    document.getElementById("pergunta").style.color = model === "light" ? "rgba(0,0,0,1)" : "rgba(255,255,255,1)";
+    document.getElementById("wav").style.backgroundColor = model === "light" ? "lightgray" : "rgba(45,45,45,1)";
+    document.getElementById("modelname").style.background = model === "light" ? "rgba(250,250,250,1)" : "rgba(45,45,45,1)";
+    document.getElementById("modelname").style.color = model === "light" ? "black" : "white";
+    document.getElementById("night-mode").style.filter = model === "light" ? "invert(0)" : "invert(1)";
+
+    // Remove estilos antigos antes de adicionar um novo
+    let oldStyle = document.getElementById("dynamic-style");
+    if (oldStyle) oldStyle.remove();
+
+    // Cria um novo <style> e adiciona ao <head>
+    let estilo = document.createElement("style");
+    estilo.id = "dynamic-style";
+    estilo.innerHTML = `
+        .usermensage {
+            background: ${model === "light" ? "lightgray" : "rgba(20,20,20,1)"};
+        }
+        .usermensage p {
+            color: ${model === "light" ? "lightgray" : "gray"};
+        }
+        body {
+color: ${model === "light" ? "black" : "white"};
+        }
+    `;
+    document.head.appendChild(estilo);
+}
+
+// Alterna entre os modos ao chamar a função
+function toggleMode() {
+    model = model === "light" ? "dark" : "light"; // Alterna entre os modos
+    localStorage.setItem("mode", model); // Salva no localStorage
+    applyMode(); // Aplica a mudança
+}
+
+// Aplica o modo ao carregar a página
+document.addEventListener("DOMContentLoaded", applyMode);
+        </script>
+</body>
+<link rel="stylesheet" href="ia.css">
+</html>

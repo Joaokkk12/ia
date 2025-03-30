@@ -1,0 +1,236 @@
+
+body {
+font-weight:bold;
+    font-family:sans,comic sans;
+    }
+.botmensage {
+    z-index:-1;
+    width: 300px;
+    height: 150px;
+    overflow: auto; /* Garante que o conteúdo que exceder o tamanho da caixa seja rolado */
+   /* Borda arredondada */
+}
+
+.botmensage p {
+    max-width: 100%; /* Garante que o texto não ultrapasse o limite do contêiner */
+    word-wrap: break-word; /* Quebra palavras longas para ajustar dentro do limite */
+    overflow-wrap: break-word; /* Quebra as palavras quando necessário */
+    margin: 0; /* Remove a margem padrão de parágrafos */
+     /* Cor do texto */
+    font-weight: bold; /* Peso da fonte */
+    font-family: sans-serif, comic sans; /* Fontes definidas */
+}
+
+.botmensage a {
+    color: gray; /* Cor do link */
+    text-decoration: none; /* Remove o sublinhado */
+}
+
+.botmensage p a {
+    word-wrap: break-word; /* Quebra palavras longas dentro do link */
+    overflow-wrap: break-word; /* Garante que o link também quebre a linha se necessário */
+}
+.usermensage {
+    z-index:-1;
+background:lightgray;
+    border-radius:12px;
+    width:300px;
+    height:auto;
+    gap:10px;
+    overflow:hidden;
+    position:relative;
+    left:100%;
+     transform: translateX(-105%); 
+}
+
+.usermensage p {
+display:flex;
+    opacity:1;
+    color:gray;
+    
+font-weight:bold;
+    font-family:sans,comic sans;
+    position:relative;
+  top:-250%;
+   left:15px;
+   
+    }
+
+
+.loading {
+    display: inline-block;
+    font-size: 24px;
+    animation: elastic 1s infinite ease-in-out;
+}
+
+@keyframes elastic {
+    0%, 100% {
+        transform: scale(0.9); /* Tamanho normal (100%) */
+    }
+    50% {
+        transform: scale(1);
+        /* Aumenta para 140% */
+    }
+}
+
+.botmensage {
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 0;
+  animation: typing 5s ease-out forwards;
+}
+
+@keyframes typing {
+  0% {
+    width: 0;
+  }
+  100% {
+    width: 100%;
+  }
+}
+ 
+
+
+      body {
+          z-index:1;
+            margin: 0;
+            height: 100vh;
+          transition: 1s;
+          /* Suaviza a transição com ease-in-out */
+        }
+
+  #form {
+
+position:fixed;
+      bottom:0;
+      left:50%;
+      transform: translateX(-50%);
+      }
+#form #perguntaForm {
+display:flex;
+       transition:1s;
+}
+#form #perguntaForm button{
+      transition:1s;
+    box-shadow:6px 8px 15px black;
+    border:none;
+   border-bottom-right-radius: 15px;
+    border-top-right-radius: 15px;
+    background-color:lightgray;
+height:15vw;
+    width:35vw;
+
+max-width:61px;
+    max-height:73px;
+      
+    }
+#form #perguntaForm input{
+      transition:1s;
+ box-shadow:0px 8px 15px black;
+    outline:none;
+       border:none;
+    font-size:20px;
+   border-bottom-left-radius: 15px;
+    border-top-left-radius: 15px;
+    height: 15vw;
+width: 80vw;  /* 80% da largura da tela */
+max-width: 900px;  /* Limita o máximo a 900px */
+     max-height:70px; 
+}
+
+#modelname {
+    transition:1s;
+    z-index:10;
+    width:100%;
+    height:60px;
+    display:flex;
+    position:fixed;
+    top:0;
+    left:0;
+background:rgba(250,250,250,1);
+box-shadow:0px -8px 15px black;
+    
+    }
+
+
+#resposta {
+position:relative;
+    top:70px;
+    }
+
+/* colors for any html things */
+
+/* Seleciona todos os elementos dentro de .botmensage e aplica a cor vermelha */
+.botmensage html, 
+.botmensage header, 
+.botmensage body, 
+.botmensage div, 
+.botmensage title, 
+.botmensage link {
+    color: red;
+}
+
+
+/* Seleciona elementos com id, class, ou eventos dentro de .botmensage e aplica a cor amarela */
+.botmensage [id], 
+.botmensage [class], 
+.botmensage [onchange], 
+.botmensage [onclick], 
+.botmensage [ondblclick], 
+.botmensage [required], 
+.botmensage [style] {
+    color: yellow;
+}
+#waveCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1; /* Joga ele para trás */
+}
+
+/* os */
+
+.setup {
+
+background:purple;
+width:100%;
+    height:100vh;
+    }
+.center {
+position:fixed;
+top:50%;
+    left:50%;
+    transform: translate(-50%, -50%);
+    }
+.lightmode {
+color:black;
+    background-color:white;
+    border:1px solid gray;
+
+    }
+.setupbox {
+
+width:300px;
+    height:300px;
+    border-radius:12px;
+    }
+
+.setupText1 {
+    transform: translate(-50%, -0%);
+    position:relative;
+    top:0;
+left:185px;
+    
+    }
+
+.setupbuttonStart {
+border:none;
+    border-radius:60px;
+    background:lightgray;
+    position:relative;
+    bottom:0;
+
+    }
